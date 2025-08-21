@@ -2,21 +2,22 @@ package utilities;
 
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.options.RequestOptions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 @UsePlaywright(CustomOptions.class)
 public class BaseTest {
     protected APIResponse response;
+    protected RequestOptions requestOptions;
 
     @BeforeEach
     public void masterSetUp() {
-        Logs.info("Soy la precondicion del padre");
+        requestOptions = RequestOptions.create();
     }
 
     @AfterEach
     public void masterTearDown() {
-        Logs.info("Soy la postcondicion del padre");
     }
 
     public enum Method {
