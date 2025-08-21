@@ -15,7 +15,7 @@ Automated UI testing project using
 ## ✅ How to Run the Tests
  mvn clean test
  mvn clean test -Dheadless=true/false
- mvn clean test -Dgroups=Tag
+ mvn clean test -Dgroups=Regression
 
  mvn allure:report
  mvn allure:serve

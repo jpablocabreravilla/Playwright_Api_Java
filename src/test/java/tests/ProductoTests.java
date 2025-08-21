@@ -1,5 +1,7 @@
 package tests;
 
+import annotations.Regression;
+import com.jayway.jsonpath.JsonPath;
 import com.microsoft.playwright.APIRequestContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import utilities.BaseTest;
 public class ProductoTests extends BaseTest {
 
     @Test
+    @Regression
     public void obtenerProductosTest(APIRequestContext request) {
         response = request.get("productos");
         ApiLogger.logApi(response, Method.GET);
@@ -17,7 +20,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void obtenerProductoTest(APIRequestContext request) {
+    @Regression    public void obtenerProductoTest(APIRequestContext request) {
         response = request.get("productos/2");
         ApiLogger.logApi(response, Method.GET);
 
@@ -25,7 +28,33 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void eliminarProductoTest(APIRequestContext request) {
+    @Regression    public void obtenerProductoTestAssertions(APIRequestContext request) {
+        response = request.get("productos/2");
+        ApiLogger.logApi(response, Method.GET);
+
+        Assertions.assertEquals(200, response.status());
+
+        final var documentContext = JsonPath.parse(response.text());
+
+        final var id = (Integer) documentContext.read("id");
+        final var nombre = (String) documentContext.read("nombre");
+        final var precio = (Double) documentContext.read("precio");
+        final var critica0Usuario = (String) documentContext.read("criticas[0].usuario");
+        final var critica2Puntaje = (Double) documentContext.read("criticas[2].puntaje");
+        final var cuartaEtiqueta = (String) documentContext.read("etiquetas[3]");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(2, id),
+                () -> Assertions.assertEquals("Papas fritas", nombre),
+                () -> Assertions.assertEquals(15.699, precio),
+                () -> Assertions.assertEquals("Fredy_Walsh95", critica0Usuario),
+                () -> Assertions.assertEquals(2.28, critica2Puntaje),
+                () -> Assertions.assertEquals("Antojos", cuartaEtiqueta)
+        );
+    }
+
+    @Test
+    @Regression    public void eliminarProductoTest(APIRequestContext request) {
         response = request.delete("productos/2");
         ApiLogger.logApi(response, Method.DELETE);
 
@@ -33,7 +62,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void ordenarProductosTest(APIRequestContext request) {
+    @Regression    public void ordenarProductosTest(APIRequestContext request) {
         requestOptions.setQueryParam("sortBy", "precio");
         requestOptions.setQueryParam("order", "asc");
 
@@ -44,7 +73,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void buscarProductosTest(APIRequestContext request) {
+    @Regression    public void buscarProductosTest(APIRequestContext request) {
         requestOptions.setQueryParam("nombre", "haricot beans");
 
         response = request.get("productos", requestOptions);
@@ -54,7 +83,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void filtrarProductosTest(APIRequestContext request) {
+    @Regression    public void filtrarProductosTest(APIRequestContext request) {
         requestOptions.setQueryParam("filterBy", "perecible");
         requestOptions.setQueryParam("value", "false");
 
@@ -65,7 +94,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void crearProductoTest(APIRequestContext request) {
+    @Regression    public void crearProductoTest(APIRequestContext request) {
         final var requestBody = """
         {
             "nombre": "Blass",
@@ -112,7 +141,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void actualizarProductoTest(APIRequestContext request) {
+    @Regression    public void actualizarProductoTest(APIRequestContext request) {
         final var requestBody = """
         {
             "nombre": "Blass Vivo 2",
@@ -159,7 +188,7 @@ public class ProductoTests extends BaseTest {
     }
 
     @Test
-    public void actualizarParcialmenteProductoTest(APIRequestContext request) {
+    @Regression    public void actualizarParcialmenteProductoTest(APIRequestContext request) {
         final var requestBody = """
         {
             "nombre": "Blass",
