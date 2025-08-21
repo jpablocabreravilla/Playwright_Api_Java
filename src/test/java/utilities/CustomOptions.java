@@ -12,6 +12,6 @@ public class CustomOptions implements OptionsFactory {
     }
 
     private APIRequest.NewContextOptions createApiRequestOptions() {
-        return new APIRequest.NewContextOptions().setBaseURL("http://");
+        return new APIRequest.NewContextOptions().setBaseURL("http://127.0.0.1:3000");
     }
 }
