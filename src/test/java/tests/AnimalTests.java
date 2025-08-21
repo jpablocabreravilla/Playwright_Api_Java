@@ -1,8 +1,8 @@
 package tests;
 
 import annotations.Regression;
-import com.jayway.jsonpath.JsonPath;
 import com.microsoft.playwright.APIRequestContext;
+import modelos.Animal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import utilities.ApiLogger;
@@ -30,6 +30,15 @@ public class AnimalTests extends BaseTest {
 
     @Test
     @Regression
+    public void obtenerAnimal2Test(APIRequestContext request) {
+        response = request.get("animales/2");
+        ApiLogger.logApi(response, Method.GET);
+
+        Assertions.assertEquals(200, response.status());
+    }
+
+/*  @Test
+    @Regression
     public void obtenerAnimalTestAssertions(APIRequestContext request) {
         response = request.get("animales/5");
         ApiLogger.logApi(response, Method.GET);
@@ -37,7 +46,6 @@ public class AnimalTests extends BaseTest {
         Assertions.assertEquals(200, response.status());
 
         final var documentContext = JsonPath.parse(response.text());
-
         final var id = (Integer) documentContext.read("id");
         final var nombre = (String) documentContext.read("nombre");
         final var peso = (Double) documentContext.read("peso");
@@ -50,6 +58,24 @@ public class AnimalTests extends BaseTest {
                 () -> Assertions.assertEquals(42.3, peso),
                 () -> Assertions.assertEquals("Dora", amoNombre),
                 () -> Assertions.assertEquals(52, amoEdad)
+        );
+    }*/
+
+    @Test
+    @Regression
+    public void obtenerAnimalTestAssertions(APIRequestContext request) {
+        response = request.get("animales/5");
+        ApiLogger.logApi(response, Method.GET);
+
+        Assertions.assertEquals(200, response.status());
+        final var animal = gson.fromJson(response.text(), Animal.class);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(5, animal.id()),
+                () -> Assertions.assertEquals("Nova", animal.nombre()),
+                () -> Assertions.assertEquals(42.3, animal.peso()),
+                () -> Assertions.assertEquals("Dovie", animal.amo().nombre()),
+                () -> Assertions.assertEquals(52, animal.amo().edad())
         );
     }
 

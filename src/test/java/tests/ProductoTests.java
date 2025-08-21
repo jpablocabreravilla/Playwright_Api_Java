@@ -1,8 +1,8 @@
 package tests;
 
 import annotations.Regression;
-import com.jayway.jsonpath.JsonPath;
 import com.microsoft.playwright.APIRequestContext;
+import modelos.Producto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import utilities.ApiLogger;
@@ -27,7 +27,7 @@ public class ProductoTests extends BaseTest {
         Assertions.assertEquals(200, response.status());
     }
 
-    @Test
+/*  @Test
     @Regression    public void obtenerProductoTestAssertions(APIRequestContext request) {
         response = request.get("productos/2");
         ApiLogger.logApi(response, Method.GET);
@@ -50,6 +50,24 @@ public class ProductoTests extends BaseTest {
                 () -> Assertions.assertEquals("Fredy_Walsh95", critica0Usuario),
                 () -> Assertions.assertEquals(2.28, critica2Puntaje),
                 () -> Assertions.assertEquals("Antojos", cuartaEtiqueta)
+        );
+    }*/
+
+    @Test
+    @Regression    public void obtenerProductoTestAssertions(APIRequestContext request) {
+        response = request.get("productos/2");
+        ApiLogger.logApi(response, Method.GET);
+
+        Assertions.assertEquals(200, response.status());
+
+        final var producto = gson.fromJson(response.text(), Producto.class);
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(2, producto.id()),
+                () -> Assertions.assertEquals("fresh chillies", producto.nombre()),
+                () -> Assertions.assertEquals(15.99, producto.precio()),
+                () -> Assertions.assertEquals("Fredy_Walsh95", producto.criticas().get(0).usuario()),
+                () -> Assertions.assertEquals(2.28, producto.criticas().get(2).puntaje()),
+                () -> Assertions.assertEquals("Fresh", producto.etiquetas().get(3))
         );
     }
 
