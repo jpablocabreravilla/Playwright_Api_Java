@@ -4,36 +4,32 @@ import annotations.Regression;
 import com.microsoft.playwright.APIRequestContext;
 import modelos.Animal;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import utilities.ApiLogger;
+import request.AnimalRequests;
 import utilities.BaseTest;
 
 public class AnimalTests extends BaseTest {
 
+    private AnimalRequests animalRequests;
+
+    @BeforeEach
+    public void setUp(APIRequestContext request) {
+        animalRequests = new AnimalRequests(request);
+    }
+
     @Test
     @Regression
-    public void obtenerAnimalesTest(APIRequestContext request) {
-        response = request.get("animales");
-        ApiLogger.logApi(response, Method.GET);
-
+    public void obtenerAnimalesTest() {
+        response = animalRequests.obtenerAnimales(requestOptions);
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void obtenerAnimalTest(APIRequestContext request) {
-        response = request.get("animales/5");
-        ApiLogger.logApi(response, Method.GET);
+    public void obtenerAnimalTest() {
 
-        Assertions.assertEquals(200, response.status());
-    }
-
-    @Test
-    @Regression
-    public void obtenerAnimal2Test(APIRequestContext request) {
-        response = request.get("animales/2");
-        ApiLogger.logApi(response, Method.GET);
-
+        response = animalRequests.obtenerAnimal(5, requestOptions);
         Assertions.assertEquals(200, response.status());
     }
 
@@ -63,70 +59,64 @@ public class AnimalTests extends BaseTest {
 
     @Test
     @Regression
-    public void obtenerAnimalTestAssertions(APIRequestContext request) {
-        response = request.get("animales/5");
-        ApiLogger.logApi(response, Method.GET);
+    public void obtenerAnimalTestAssertions() {
 
+
+        response = animalRequests.obtenerAnimal(5, requestOptions);
         Assertions.assertEquals(200, response.status());
+
         final var animal = gson.fromJson(response.text(), Animal.class);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(5, animal.id()),
-                () -> Assertions.assertEquals("Nova", animal.nombre()),
+                () -> Assertions.assertEquals("Fido", animal.nombre()),
                 () -> Assertions.assertEquals(42.3, animal.peso()),
-                () -> Assertions.assertEquals("Dovie", animal.amo().nombre()),
+                () -> Assertions.assertEquals("Dora", animal.amo().nombre()),
                 () -> Assertions.assertEquals(52, animal.amo().edad())
         );
     }
 
     @Test
     @Regression
-    public void eliminarAnimalTest(APIRequestContext request) {
-        response = request.delete("animales/5");
-        ApiLogger.logApi(response, Method.DELETE);
+    public void eliminarAnimalTest() {
 
+        response = animalRequests.eliminarAnimal(5, requestOptions);
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void ordenarAnimalesTest(APIRequestContext request) {
+    public void ordenarAnimalesTest() {
         // Endpoint resultante: /animales?sortBy=edad&order=desc
         requestOptions.setQueryParam("sortBy", "edad");
         requestOptions.setQueryParam("order", "desc");
-
-        response = request.get("animales", requestOptions);
-        ApiLogger.logApi(response, Method.GET);
+        response = animalRequests.obtenerAnimales(requestOptions);
 
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void buscarAnimalesTest(APIRequestContext request) {
+    public void buscarAnimalesTest() {
         requestOptions.setQueryParam("nombre", "Lola");
-
-        response = request.get("animales", requestOptions);
-        ApiLogger.logApi(response, Method.GET);
+        response = animalRequests.obtenerAnimales(requestOptions);
 
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void filtrarAnimalesTest(APIRequestContext request) {
+    public void filtrarAnimalesTest() {
         requestOptions.setQueryParam("filterBy", "tipo");
         requestOptions.setQueryParam("value", "domestico");
-
-        response = request.get("animales", requestOptions);
-        ApiLogger.logApi(response, Method.GET);
+        response = animalRequests.obtenerAnimales(requestOptions);
 
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void crearAnimalTest(APIRequestContext request) {
+    public void crearAnimalTest() {
         final var requestBody = """
                 {
                     "nombre": "Nova",
@@ -146,16 +136,13 @@ public class AnimalTests extends BaseTest {
 
         requestOptions.setData(requestBody);
         requestOptions.setHeader("Content-Type", "application/json");
-
-        response = request.post("animales", requestOptions);
-        ApiLogger.logApi(response, Method.POST);
-
+        response = animalRequests.crearAnimal( requestOptions);
         Assertions.assertEquals(201, response.status());
     }
 
     @Test
     @Regression
-    public void actualizarAnimalTest(APIRequestContext request) {
+    public void actualizarAnimalTest() {
         final var requestBody = """
                 {
                     "nombre": "Curso en Vivo",
@@ -175,16 +162,14 @@ public class AnimalTests extends BaseTest {
 
         requestOptions.setData(requestBody);
         requestOptions.setHeader("Content-Type", "application/json");
-
-        response = request.put("animales/5", requestOptions);
-        ApiLogger.logApi(response, Method.PUT);
+        response = animalRequests.actualizarAnimal(5, requestOptions);
 
         Assertions.assertEquals(200, response.status());
     }
 
     @Test
     @Regression
-    public void actualizarParcialmenteAnimalTest(APIRequestContext request) {
+    public void actualizarParcialmenteAnimalTest() {
         final var requestBody = """
                 {
                     "nombre": "Hola",
@@ -196,9 +181,7 @@ public class AnimalTests extends BaseTest {
 
         requestOptions.setData(requestBody);
         requestOptions.setHeader("Content-Type", "application/json");
-
-        response = request.patch("animales/5", requestOptions);
-        ApiLogger.logApi(response, Method.PATCH);
+        response = animalRequests.actualizarParcialmenteAnimal(5, requestOptions);
 
         Assertions.assertEquals(200, response.status());
     }

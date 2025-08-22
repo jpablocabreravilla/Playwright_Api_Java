@@ -4,27 +4,33 @@ import annotations.Regression;
 import com.jayway.jsonpath.JsonPath;
 import com.microsoft.playwright.APIRequestContext;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import utilities.ApiLogger;
+import request.AuthRequests;
 import utilities.BaseTest;
 
 public class LoginTests extends BaseTest {
+    private AuthRequests authRequests;
+
+    @BeforeEach
+    public void setUp(APIRequestContext request) {
+        authRequests = new AuthRequests(request);
+    }
 
     @Test
     @Regression
-public void loginTest(APIRequestContext request) {
+    public void loginTest() {
         final var requestBody = """
-        {
-            "username": "standard_user",
-            "password": "secret_blass_academy"
-        }
-        """;
+                {
+                    "username": "standard_user",
+                    "password": "secret_blass_academy"
+                }
+                """;
 
         requestOptions.setData(requestBody);
         requestOptions.setHeader("Content-Type", "application/json");
 
-        response = request.post("auth/login", requestOptions);
-        ApiLogger.logApi(response, Method.POST);
+        response = authRequests.login(requestOptions);
 
         Assertions.assertEquals(200, response.status());
 
