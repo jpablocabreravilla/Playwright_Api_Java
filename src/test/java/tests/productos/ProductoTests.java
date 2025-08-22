@@ -1,4 +1,4 @@
-package tests;
+package tests.productos;
 
 import annotations.Regression;
 import com.microsoft.playwright.APIRequestContext;
@@ -15,6 +15,7 @@ public class ProductoTests extends BaseTest {
 
     @BeforeEach
     public void setUp(APIRequestContext request) {
+        initAuth(request, requestOptions);
         productoRequests = new ProductoRequests(request);
     }
 

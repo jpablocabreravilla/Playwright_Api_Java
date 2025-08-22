@@ -1,4 +1,4 @@
-package tests;
+package tests.animales;
 
 import annotations.Regression;
 import com.microsoft.playwright.APIRequestContext;
@@ -15,6 +15,7 @@ public class AnimalTests extends BaseTest {
 
     @BeforeEach
     public void setUp(APIRequestContext request) {
+        initAuth(request, requestOptions);
         animalRequests = new AnimalRequests(request);
     }
 
@@ -28,7 +29,6 @@ public class AnimalTests extends BaseTest {
     @Test
     @Regression
     public void obtenerAnimalTest() {
-
         response = animalRequests.obtenerAnimal(5, requestOptions);
         Assertions.assertEquals(200, response.status());
     }
@@ -79,7 +79,6 @@ public class AnimalTests extends BaseTest {
     @Test
     @Regression
     public void eliminarAnimalTest() {
-
         response = animalRequests.eliminarAnimal(5, requestOptions);
         Assertions.assertEquals(200, response.status());
     }
@@ -136,7 +135,7 @@ public class AnimalTests extends BaseTest {
 
         requestOptions.setData(requestBody);
         requestOptions.setHeader("Content-Type", "application/json");
-        response = animalRequests.crearAnimal( requestOptions);
+        response = animalRequests.crearAnimal(requestOptions);
         Assertions.assertEquals(201, response.status());
     }
 

@@ -24,7 +24,7 @@ public class ProductoRequests extends BaseRequest {
 
     @Step("(GET) Obtener producto")
     public APIResponse obtenerProducto(int id, RequestOptions requestOptions) {
-        response = request.get("productos/" + id);
+        response = request.get("productos/" + id, requestOptions);
         ApiLogger.logApi(response, BaseTest.Method.GET);
 
         return response;

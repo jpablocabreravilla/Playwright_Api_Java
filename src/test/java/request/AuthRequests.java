@@ -16,7 +16,7 @@ public class AuthRequests extends BaseRequest {
 
     @Step("(POST) Login Request")
     public APIResponse login(RequestOptions requestOptions) {
-        response = request.post("auth/login", requestOptions);
+        response = request.post("login", requestOptions);
         ApiLogger.logApi(response, BaseTest.Method.POST);
 
         return response;

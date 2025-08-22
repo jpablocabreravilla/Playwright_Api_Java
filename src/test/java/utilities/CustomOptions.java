@@ -4,7 +4,6 @@ import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.OptionsFactory;
 
-import java.util.Base64;
 import java.util.Map;
 
 public class CustomOptions implements OptionsFactory {
@@ -15,12 +14,12 @@ public class CustomOptions implements OptionsFactory {
     }
 
     private APIRequest.NewContextOptions createApiRequestOptions() {
-        final var credenciales = "standard_user:secret_blass_academy";
-        final var codificado = Base64.getEncoder().encodeToString(credenciales.getBytes());
-        final var value = String.format("Basic %s", codificado);
+        //final var credenciales = "standard_user:secret_blass_academy";
+        //final var codificado = Base64.getEncoder().encodeToString(credenciales.getBytes());
+        //final var value = String.format("Basic %s", codificado);
 
         return new APIRequest.NewContextOptions()
-                .setBaseURL("http://127.0.0.1:3000/basic/") //Basic Auth
-                .setExtraHTTPHeaders(Map.of("Authorization", value)); //header authorization
+                .setBaseURL("http://127.0.0.1:3000/auth/")
+                .setExtraHTTPHeaders(Map.of("content-Type", "application/json"));
     }
 }

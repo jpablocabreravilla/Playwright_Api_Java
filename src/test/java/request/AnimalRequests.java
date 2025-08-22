@@ -24,7 +24,7 @@ public class AnimalRequests extends BaseRequest {
 
     @Step("(GET) Obtener Animal")
     public APIResponse obtenerAnimal(int id, RequestOptions requestOptions) {
-        response = request.get("animales/" + id);
+        response = request.get("animales/" + id, requestOptions);
         ApiLogger.logApi(response, BaseTest.Method.GET);
 
         return response;
