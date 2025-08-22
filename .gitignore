@@ -37,8 +37,9 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Allure Results ###
+# === Allure ===
+.allure/
 allure-results/
-
+allure-report/
 ### Logs ###
 *.log
